@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grokking-lab"
+version = "0.1.0"
+description = "Reproducible PyTorch experiments on delayed generalization in modular addition"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "Igor Rybakov" }]
+dependencies = [
+  "numpy>=1.26,<3",
+  "torch>=2.6,<3",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+dev = [
+  "matplotlib>=3.8,<4",
+  "pytest>=8,<9",
+]
+
+[project.scripts]
+grokking-lab = "grokking_lab.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+

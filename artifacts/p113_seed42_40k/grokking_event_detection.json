@@ -1,0 +1,13 @@
+{
+  "experiment_id": "exp_1785360132042_p113",
+  "memorization_step": 200,
+  "grokking_candidate_step": 25600,
+  "plateau_step": 26500,
+  "status_classifier": "GROKKING_CONFIRMED",
+  "consecutive_plateau_count": 145,
+  "current_train_acc": 1.0,
+  "current_val_acc": 1.0,
+  "current_train_loss": 1.8614059626997914e-06,
+  "current_val_loss": 2.593221097413334e-06,
+  "current_weight_norm": 39.265968590104336
+}

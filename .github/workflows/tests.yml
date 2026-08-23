@@ -1,0 +1,25 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  smoke-and-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install CPU PyTorch
+        run: python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+      - name: Install project
+        run: python -m pip install -e ".[dev]"
+      - name: Verify frozen artifacts
+        run: python scripts/verify_artifacts.py
+      - name: Run tests, smoke training, and checkpoint replay
+        run: pytest
+

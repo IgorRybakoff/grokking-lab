@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this experimental package, please cite it as follows."
+title: "Grokking Lab: reproducible delayed-generalization experiments"
+type: software
+version: 0.1.0
+date-released: 2026-08-23
+authors:
+  - family-names: Rybakov
+    given-names: Igor
+repository-code: "https://github.com/IgorRybakoff/grokking-lab"
+license: Apache-2.0
+

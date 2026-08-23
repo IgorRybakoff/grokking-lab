@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "exp_1785360132042_p113",
+  "claim_scope": "single_seed_single_task",
+  "entries": [
+    {"path": "config.json", "origin": "original_run"},
+    {"path": "experiment_manifest.json", "origin": "original_run"},
+    {"path": "training_timeseries.json", "origin": "original_run"},
+    {"path": "grokking_event_detection.json", "origin": "original_run"},
+    {"path": "validation_diagnostics.json", "origin": "original_run"},
+    {"path": "checkpoint_replay_report.json", "origin": "original_run"},
+    {"path": "report.md", "origin": "original_run"},
+    {"path": "checkpoints/init_model_state.pt", "origin": "original_run"},
+    {"path": "checkpoints/memorization_model_state.pt", "origin": "original_run"},
+    {"path": "checkpoints/threshold_98_5_model_state.pt", "origin": "original_run"},
+    {"path": "checkpoints/plateau_model_state.pt", "origin": "original_run"},
+    {"path": "checkpoints/final_model_state.pt", "origin": "original_run"},
+    {"path": "plots/grokking_curve.png", "origin": "derived_from_measured_data", "source": "training_timeseries.json"}
+  ]
+}
+

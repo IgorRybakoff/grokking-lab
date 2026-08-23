@@ -1,0 +1,22 @@
+{
+  "p": 113,
+  "train_fraction": 0.3,
+  "seed": 42,
+  "d_model": 128,
+  "n_heads": 4,
+  "d_mlp": 512,
+  "n_layers": 1,
+  "context_length": 3,
+  "activation": "relu",
+  "normalization_type": "none",
+  "dropout": 0.0,
+  "causal_attention": true,
+  "learning_rate": 0.001,
+  "weight_decay": 1.0,
+  "max_steps": 40000,
+  "log_interval": 100,
+  "full_batch": true,
+  "run_mode": "long_run",
+  "experiment_id": "public_reproduction_p113_seed42_40k"
+}
+

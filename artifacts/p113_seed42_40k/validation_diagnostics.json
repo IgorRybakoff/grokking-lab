@@ -1,0 +1,9 @@
+{
+  "experiment_id": "exp_1785360132042_p113",
+  "generalization_gap": 0.0,
+  "loss_ratio": 1.3931510676483754,
+  "final_train_acc": 1.0,
+  "final_val_acc": 1.0,
+  "weight_norm": 39.265968590104336,
+  "total_steps": 40000
+}
