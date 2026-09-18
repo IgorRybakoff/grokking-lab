@@ -5,7 +5,7 @@ type: software
 version: 0.1.0
 date-released: 2026-08-23
 authors:
-  - family-names: Rybakov
+  - family-names: Rybakoff
     given-names: Igor
 repository-code: "https://github.com/IgorRybakoff/grokking-lab"
 license: Apache-2.0
