@@ -1,26 +1,77 @@
 \section{Artifact Map}
-The frozen run is identified as \texttt{exp\_1785360132042\_p113}. The public evidence package includes:
+The public evidence base contains multiple independent long runs and supporting controls. The three principal $p=113$ runs are:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Seed & Experiment ID & Final status \\
+\midrule
+42 & \texttt{exp\_1785360132042\_p113} & \texttt{GROKKING\_CONFIRMED} \\
+43 & \texttt{exp\_1785406284582\_p113} & \texttt{GROKKING\_CONFIRMED} \\
+44 & \texttt{exp\_p113\_seed44\_research\_v04} & \texttt{GROKKING\_CONFIRMED} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For the seed-42 public package, the core artifacts include:
 \begin{itemize}[leftmargin=*]
-    \item \texttt{config.json}: byte-preserved historical configuration;
-    \item \texttt{experiment\_manifest.json}: environment, architecture, completion status, and checkpoint registry;
-    \item \texttt{training\_timeseries.json}: measured losses, accuracies, and weight norms;
-    \item \texttt{grokking\_event\_detection.json}: milestone outputs and run-level status;
-    \item \texttt{checkpoint\_replay\_report.json}: replay measurements from new forward passes;
-    \item \texttt{SHA256SUMS}: published package integrity checks;
-    \item \texttt{artifact\_index.json}: metadata distinguishing original, derived, and publication artifacts.
+    \item \texttt{config.json};
+    \item \texttt{experiment\_manifest.json};
+    \item \texttt{training\_timeseries.json};
+    \item \texttt{grokking\_event\_detection.json};
+    \item \texttt{checkpoint\_replay\_report.json};
+    \item \texttt{SHA256SUMS};
+    \item \texttt{artifact\_index.json}.
 \end{itemize}
 
+The later seed-44 publication protocol additionally preserves:
+\begin{itemize}[leftmargin=*]
+    \item \texttt{dataset\_split.json} with exact train/validation indices;
+    \item \texttt{environment\_lock.json};
+    \item \texttt{source\_hash\_manifest.json};
+    \item configuration, source, split, and environment hashes bound into checkpoint metadata.
+\end{itemize}
+
+\section{Milestone Summary}
+The three independent $p=113$ runs satisfy the same principal delayed-generalization policy.
+
+\begin{center}
+\begin{tabular}{rrrr}
+\toprule
+Seed & Memorization & Candidate & Plateau \\
+\midrule
+42 & 200 & 25{,}600 & 26{,}500 \\
+43 & 302 & 32{,}300 & 33{,}200 \\
+44 & 416 & 23{,}000 & 23{,}900 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For seeds 43 and 44, memorization is detected at optimizer-step resolution. The seed-42 historical package records this event at the older 100-step logging resolution.
+
 \section{Checkpoint Roles}
-The release preserves checkpoints at five semantically distinct points:
+Each principal run preserves semantically distinct checkpoints for:
 \begin{enumerate}[leftmargin=*]
-    \item step 0: initialization;
-    \item step 200: memorization;
-    \item step 25{,}600: first logged validation threshold crossing;
-    \item step 26{,}500: stable validation plateau under the ten-check rule;
-    \item step 40{,}000: final model state.
+    \item initialization;
+    \item memorization;
+    \item first generalization-threshold crossing;
+    \item stable plateau;
+    \item final model state.
 \end{enumerate}
 
-Each checkpoint has a recorded SHA-256 value and a replay status in the experiment manifest.
+Checkpoint replay is used as a functional compatibility gate rather than assuming that file integrity alone proves scientific correctness.
+
+\section{Negative Controls}
+Small-modulus runs at $p=11$ were used as boundary and negative controls. They include memorization-only and partial-generalization outcomes and therefore demonstrate that the classifier does not automatically promote every completed run to \texttt{GROKKING\_CONFIRMED}.
+
+\section{Provenance Boundary}
+The provenance protocol evolved during the project.
+
+The earlier seed-42 and seed-43 runs preserve real PyTorch artifacts, measured timeseries, and replayable checkpoints. The later seed-44 run uses publication protocol v0.4 and additionally records source hashes, an environment lock, and exact dataset split indices.
+
+The seed-44 source-freeze manifest records SHA-256 hashes for the training and audit code and reports no missing source files. The environment lock records Python 3.14.3, PyTorch 2.13.0, NumPy 2.5.1, macOS arm64, CPU execution, and float32 arithmetic.
+
+The source-freeze metadata also records that Git dirty-state detection was unavailable because the experiment directory itself was not a Git repository. Accordingly, the source-hash manifest is treated as the relevant integrity record rather than a verified Git working-tree state.
 
 \section{Reproduction Commands}
 Artifact verification:
@@ -43,4 +94,4 @@ python scripts/run_experiment.py \
   --output runs/p113_seed42_40k
 \end{verbatim}
 
-A successful independent long run should be reported as a new run rather than replacing the frozen historical evidence.
+Independent reruns should be preserved as distinct experiments rather than overwriting historical evidence.
