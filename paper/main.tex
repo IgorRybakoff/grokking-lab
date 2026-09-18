@@ -108,15 +108,15 @@ The candidate transition spans a range of 9{,}300 optimizer steps across the thr
 
 The delay from detected memorization to the first validation threshold crossing is 25{,}400 steps for seed 42, 31{,}998 for seed 43, and 22{,}584 for seed 44. This variation is itself a useful experimental result: a single transition step should not be treated as a configuration-level constant.
 
-\subsection{Seed 42 reference run}
-The original frozen run contains 401 records from step 0 through step 40{,}000. At the memorization checkpoint (step 200), replayed train accuracy is approximately 0.9984 while validation accuracy is approximately 0.00045. At step 25{,}600 validation accuracy reaches approximately 0.9978, and by step 26{,}500 it reaches 1.0.
-
 \begin{figure}[h]
 \centering
-\includegraphics[width=\linewidth]{../artifacts/p113_seed42_40k/plots/grokking_curve.png}
-\caption{Measured training and validation accuracy for the frozen seed-42 reference run. The plot is generated from stored measurements without smoothing or synthetic points.}
-\label{fig:grokking}
+\includegraphics[width=\linewidth]{figures/three_seed_validation.png}
+\caption{Validation accuracy for seeds 42, 43, and 44 from the stored training time series. The dashed line marks the 0.985 generalization threshold. No smoothing or synthetic points are used.}
+\label{fig:three_seed}
 \end{figure}
+
+\subsection{Seed 42 reference run}
+The original frozen run contains 401 records from step 0 through step 40{,}000. At the memorization checkpoint (step 200), replayed train accuracy is approximately 0.9984 while validation accuracy is approximately 0.00045. At step 25{,}600 validation accuracy reaches approximately 0.9978, and by step 26{,}500 it reaches 1.0.
 
 \subsection{Seed 43 replication}
 Under the same principal configuration, seed 43 memorizes at step 302, first crosses the 0.985 validation threshold at step 32{,}300, and reaches the stable plateau at step 33{,}200. The final train and validation accuracy are both 1.0. Checkpoint replay reports exact agreement with recorded metrics.
