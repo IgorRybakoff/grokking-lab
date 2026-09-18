@@ -16,14 +16,10 @@ pdflatex main.tex
 The manuscript expects the figure at:
 
 ```
-paper/figures/grokking_curve.png
+paper/figures/three_seed_validation.png
 ```
 
-The source figure is generated from the frozen run at:
-
-```
-artifacts/p113_seed42_40k/plots/grokking_curve.png
-```
+The three-seed comparison figure is generated directly from the stored training time series for seeds 42, 43, and 44.
 
 ## Scope
 
