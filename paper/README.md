@@ -1,6 +1,6 @@
 # arXiv paper package
 
-Working title: **A Reproducible Baseline for Grokking in Modular Addition**
+Working title: **Reproducible Grokking in Modular Addition Across Three Independent Seeds**
 
 ## Build
 
@@ -27,9 +27,9 @@ artifacts/p113_seed42_40k/plots/grokking_curve.png
 
 ## Scope
 
-The paper makes a deliberately narrow claim: one frozen PyTorch run with `p=113`, seed 42, and the documented event policy exhibits delayed generalization and is packaged with replayable checkpoints, integrity metadata, and explicit reproducibility boundaries.
+The paper makes a deliberately narrow claim: three independent PyTorch runs with `p=113` and seeds 42, 43, and 44 exhibit delayed generalization under one fixed principal configuration. The package emphasizes replayable checkpoints, integrity metadata, and explicit reproducibility boundaries.
 
-It does **not** claim universality across seeds or a new mechanistic theory of grokking.
+It does **not** claim universality across arbitrary seeds or a new mechanistic theory of grokking.
 
 ## Submission category
 
