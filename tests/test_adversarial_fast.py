@@ -6,6 +6,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
+import torch
 from fastapi.testclient import TestClient
 
 from grokking_lab.web_v02 import create_app
@@ -27,21 +28,12 @@ def _read_files() -> dict[str, bytes]:
 def _zip(files: dict[str, bytes], *, extra: list[tuple[zipfile.ZipInfo, bytes]] | None = None, stored: bool = False) -> bytes:
     buf = io.BytesIO()
     compression = zipfile.ZIP_STORED if stored else zipfile.ZIP_DEFLATED
-    with pytest.warns(None) if False else _nullcontext():
-        with zipfile.ZipFile(buf, "w", compression=compression) as zf:
-            for name, data in files.items():
-                zf.writestr(name, data)
-            for info, data in extra or []:
-                zf.writestr(info, data)
+    with zipfile.ZipFile(buf, "w", compression=compression) as zf:
+        for name, data in files.items():
+            zf.writestr(name, data)
+        for info, data in extra or []:
+            zf.writestr(info, data)
     return buf.getvalue()
-
-
-class _nullcontext:
-    def __enter__(self):
-        return None
-
-    def __exit__(self, exc_type, exc, tb):
-        return False
 
 
 def _post(client: TestClient, data: bytes, name: str = "run.zip"):
@@ -85,6 +77,22 @@ def _remove_checksum_declaration(files: dict[str, bytes], relative: str) -> dict
             lines.append(f"{digest}  {path}")
     out[SUMS] = ("\n".join(lines) + "\n").encode("utf-8")
     return out
+
+
+def _semantic_checkpoint_tamper(blob: bytes) -> bytes:
+    state = torch.load(io.BytesIO(blob), map_location="cpu", weights_only=True)
+    assert isinstance(state, dict)
+    changed = False
+    tampered = {}
+    for key, value in state.items():
+        if not changed and torch.is_tensor(value) and value.is_floating_point() and value.numel() > 0:
+            value = torch.zeros_like(value)
+            changed = True
+        tampered[key] = value
+    assert changed, "checkpoint contains no floating tensor to tamper"
+    out = io.BytesIO()
+    torch.save(tampered, out)
+    return out.getvalue()
 
 
 def _corrupt_stored_member(data: bytes, member: str) -> bytes:
@@ -139,15 +147,13 @@ def test_stale_checksum_fails(client, canonical_files):
 
 def test_rehashed_altered_checkpoint_fails_via_replay(client, canonical_files):
     files = dict(canonical_files)
-    blob = bytearray(files[CHECKPOINT])
-    blob[len(blob) // 2] ^= 0x01
-    files[CHECKPOINT] = bytes(blob)
+    files[CHECKPOINT] = _semantic_checkpoint_tamper(files[CHECKPOINT])
     files = _rewrite_checksum(files, CHECKPOINT)
     audit = _audit(_post(client, _zip(files)))
     assert audit["verdict"] == "FAILED"
     statuses = {item["id"]: item["status"] for item in audit["checks"]}
     assert statuses["checksums"] == "PASS"
-    assert "FAIL" in (statuses["replay"], statuses["canonical_grokking_contract"])
+    assert statuses["replay"] == "FAIL"
 
 
 def test_declared_missing_file_is_failed(client, canonical_files):
