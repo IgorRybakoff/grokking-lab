@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "grokking-lab"
 version = "0.1.0"
-description = "Reproducible PyTorch experiments on delayed generalization in modular addition"
+description = "Reproducible ML experiment audit and evidence packaging, built on Grokking Lab"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.10"
@@ -22,7 +22,13 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
+web = [
+  "fastapi>=0.115,<1",
+  "python-multipart>=0.0.12,<1",
+  "uvicorn>=0.30,<1",
+]
 dev = [
+  "httpx>=0.27,<1",
   "matplotlib>=3.8,<4",
   "pytest>=8,<9",
 ]
@@ -36,4 +42,3 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
-
