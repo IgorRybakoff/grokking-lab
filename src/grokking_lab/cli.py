@@ -41,7 +41,19 @@ def main() -> None:
     export.add_argument("--checkpoint", default="final_model_state.pt")
     export.add_argument("--output")
 
+    serve = subparsers.add_parser("serve", help="Launch the local Grokking Lab audit product")
+    serve.add_argument("--host", default="127.0.0.1")
+    serve.add_argument("--port", type=int, default=8000)
+
     args = parser.parse_args()
+    if args.command == "serve":
+        try:
+            import uvicorn
+        except ImportError as exc:
+            raise SystemExit("Web UI requires: pip install -e '.[web]'") from exc
+        uvicorn.run("grokking_lab.web:app", host=args.host, port=args.port)
+        return
+
     if args.command in ("smoke", "train"):
         result = run_training(ExperimentConfig.from_json(args.config), args.output)
     elif args.command == "verify":
