@@ -24,7 +24,7 @@ def _load_json_if_present(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
-def _checksum_check(root: Path) -> dict[str, Any]:
+def _checksum_check(root: Path, *, required_declarations: tuple[str, ...] = ()) -> dict[str, Any]:
     sums_path = root / "SHA256SUMS"
     if not sums_path.is_file():
         return _check("checksums", "INCOMPLETE", reason="SHA256SUMS missing")
@@ -43,10 +43,31 @@ def _checksum_check(root: Path) -> dict[str, Any]:
         elif sha256_file(path) != expected:
             mismatches.append(relative)
 
-    if mismatches:
-        return _check("checksums", "FAIL", mismatches=mismatches, missing=missing, verified=len(sums) - len(mismatches) - len(missing))
-    if missing:
-        return _check("checksums", "INCOMPLETE", missing=missing, verified=len(sums) - len(missing))
+    # A file named by the evidence contract but absent from the package is a
+    # contradiction, not merely missing optional evidence.
+    if mismatches or missing:
+        return _check(
+            "checksums",
+            "FAIL",
+            mismatches=mismatches,
+            missing=missing,
+            verified=len(sums) - len(mismatches) - len(missing),
+        )
+
+    undeclared = [
+        relative
+        for relative in required_declarations
+        if (root / relative).is_file() and relative not in sums
+    ]
+    if undeclared:
+        return _check(
+            "checksums",
+            "INCOMPLETE",
+            reason="required replay evidence is present but not declared in SHA256SUMS",
+            undeclared=undeclared,
+            verified=len(sums),
+        )
+
     return _check("checksums", "PASS", verified=len(sums))
 
 
@@ -107,12 +128,13 @@ def audit_run(
 
     root = Path(artifact_dir)
     manifest = _load_json_if_present(root / "experiment_manifest.json")
+    checkpoint_relative = f"checkpoints/{checkpoint}"
 
     missing = [name for name in BASE_REQUIRED if not (root / name).is_file()]
     checks: list[dict[str, Any]] = [
         _check("base_evidence", "PASS" if not missing else "INCOMPLETE", missing=missing),
         _environment_check(root, manifest),
-        _checksum_check(root),
+        _checksum_check(root, required_declarations=(checkpoint_relative,) if replay else ()),
         _canonical_grokking_check(root),
     ]
     if replay:
@@ -135,7 +157,6 @@ def audit_run(
         "verdict": verdict,
         "adapter": "canonical_grokking_v1",
         "experiment_id": manifest.get("experiment_id", root.name),
-        "artifact_dir": str(root),
         "checkpoint": checkpoint if replay else None,
         "checks": checks,
     }
