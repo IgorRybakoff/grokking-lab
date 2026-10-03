@@ -11,6 +11,13 @@ from typing import Any
 from .audit import audit_run
 from .evidence import export_evidence_package
 
+try:
+    from fastapi import FastAPI, File, HTTPException, UploadFile
+    from fastapi.responses import FileResponse, HTMLResponse
+except ImportError:  # pragma: no cover - web extra is optional
+    FastAPI = File = HTTPException = UploadFile = None  # type: ignore[assignment]
+    FileResponse = HTMLResponse = None  # type: ignore[assignment]
+
 MAX_UPLOAD_BYTES = 256 * 1024 * 1024
 MAX_EXTRACTED_BYTES = 512 * 1024 * 1024
 MAX_ZIP_ENTRIES = 5000
@@ -193,11 +200,8 @@ def _audit_to_job(root: Path, job_dir: Path) -> dict[str, Any]:
 
 
 def create_app():
-    try:
-        from fastapi import FastAPI, File, HTTPException, UploadFile
-        from fastapi.responses import FileResponse, HTMLResponse
-    except ImportError as exc:  # pragma: no cover - exercised only without web extra
-        raise RuntimeError("Web UI requires: pip install -e '.[web]'") from exc
+    if FastAPI is None or File is None or HTTPException is None or UploadFile is None or FileResponse is None or HTMLResponse is None:
+        raise RuntimeError("Web UI requires: pip install -e '.[web]'")
 
     app = FastAPI(title="Grokking Lab Experiment Audit", version="0.1.0")
 
