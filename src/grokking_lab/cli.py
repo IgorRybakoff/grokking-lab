@@ -51,7 +51,7 @@ def main() -> None:
             import uvicorn
         except ImportError as exc:
             raise SystemExit("Web UI requires: pip install -e '.[web]'") from exc
-        uvicorn.run("grokking_lab.web:app", host=args.host, port=args.port)
+        uvicorn.run("grokking_lab.web_v02:app", host=args.host, port=args.port)
         return
 
     if args.command in ("smoke", "train"):
